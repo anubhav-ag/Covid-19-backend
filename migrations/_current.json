@@ -1,0 +1,17 @@
+{
+    "tables": {
+        "Clinics": {
+            "tableName": "Clinics",
+            "indexes": []
+        },
+        "Slots": {
+            "tableName": "Slots",
+            "indexes": []
+        },
+        "Users": {
+            "tableName": "Users",
+            "indexes": []
+        }
+    },
+    "revision": 2
+}
