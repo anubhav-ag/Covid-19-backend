@@ -1,5 +1,4 @@
 'use strict';
-const clinic = require('./clinic.js') 
 const {
   Model
 } = require('sequelize');
@@ -37,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       references: {
         // This is a reference to another model
-        model: clinic,
+        model: 'Clinic',
     
         // This is the column name of the referenced model
         key: 'id'

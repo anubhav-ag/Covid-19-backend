@@ -8,8 +8,25 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      date: {
-        type: Sequelize.DATEONLY
+      user_id: {  
+        type: Sequelize.INTEGER.UNSIGNED,
+        references: {
+          model: {
+            tableName: 'users',
+            //schema: 'appointment_booker'
+          },
+          key: 'id'
+        }
+      },
+      slot_id: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        references: {
+          model: {
+            tableName: 'slots',
+            //schema: 'appointment_booker'
+          },
+          key: 'id'
+        }
       },
       created_at: {
         allowNull: false,
@@ -29,3 +46,4 @@ module.exports = {
     await queryInterface.dropTable('Appointments');
   }
 };
+

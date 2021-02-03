@@ -1,14 +1,14 @@
 // Import dependencies
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require('express')
+const app = express();
+const port = process.env.PORT || 5000
+const sequelize = require('./models/index')
+const Clinics= require('./models/clinic')
+const ClinicModel = Clinics(sequelize.sequelize, sequelize.Sequelize.DataTypes)
+
+const bodyParser = require('body-parser')
 const cors = require('cors');
 const path = require('path');
-
-// Create a new express application named 'app'
-const app = express();
-
-// Set our backend port to be either an environment variable or port 5000
-const port = process.env.PORT || 5000;
 
 // This application level middleware prints incoming requests to the servers console, useful to see incoming requests
 app.use((req, res, next) => {
@@ -25,10 +25,25 @@ app.use(bodyParser.urlencoded({
 // Configure the CORs middleware
 app.use(cors());
 
-// Require Route
-const api = require('./routes/routes');
-// Configure app to use route
-app.use('/api/v1/', api);
+
+app.get('/api/v1/clinics', (req, res) => {
+    ClinicModel.findAll({
+      attributes: ['clinic_name',] 
+    })
+        .then(response => {
+            return res.status(200).json({
+                success: true,
+                clinics: response
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            return res.status(400).json({
+                success: false,
+                message: 'finding clinics failed'
+            })
+        })
+})
 
 // This middleware informs the express application to serve our compiled React files
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
@@ -47,4 +62,4 @@ app.get('*', (req, res) => {
 });
 
 // Configure our server to listen on the port defiend by our port variable
-app.listen(port, () => console.log(`BACK_END_SERVICE_PORT: ${port}`));
+app.listen(port, () => console.log(`BACK_END_SERVICE_PORT: ${port}`))
