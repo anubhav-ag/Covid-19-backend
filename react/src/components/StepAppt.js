@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import AppBar from "material-ui/AppBar";
+/*import AppBar from "material-ui/AppBar";*/
 import RaisedButton from "material-ui/RaisedButton";
 import FlatButton from "material-ui/FlatButton";
 import moment from "moment";
@@ -20,6 +20,7 @@ class StepAppt extends Component {
     super(props, context);
 
     this.state = {
+      clinic: "",
       firstName: "",
       lastName: "",
       email: "",
@@ -56,11 +57,13 @@ class StepAppt extends Component {
       name: this.state.firstName + " " + this.state.lastName,
       email: this.state.email,
       phone: this.state.phone,
+      clinic: this.state.clinic,
       slot_date: moment(this.state.appointmentDate).format("YYYY-DD-MM"),
       slot_time: this.state.appointmentSlot
     };
     axios
       .post(API_BASE + "api/appointmentCreate", newAppointment)
+      // eslint-disable-next-line no-unused-vars
       .then(response =>
         this.setState({
           confirmationSnackbarMessage: "Appointment succesfully added!",
@@ -91,6 +94,14 @@ class StepAppt extends Component {
       this.setState({ stepIndex: stepIndex - 1 });
     }
   };
+
+  handleClinic = (e) => {
+    this.setState({
+      clinic: e.target.value
+
+    })
+  }
+  /*
   validateEmail(email) {
     const regex = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     return regex.test(email)
@@ -103,6 +114,7 @@ class StepAppt extends Component {
       ? this.setState({ phone: phoneNumber, validPhone: true })
       : this.setState({ validPhone: false });
   }
+  */
   checkDisableDate(day) {
     const dateString = moment(day).format("YYYY-DD-MM");
     return (
@@ -255,7 +267,7 @@ class StepAppt extends Component {
 
   render() {
     const {
-      finished,
+      /*finished,*/
       isLoading,
       smallScreen,
       stepIndex,
@@ -281,6 +293,7 @@ class StepAppt extends Component {
       </div>
     );
     const modalActions = [
+      /*
       <FlatButton
         label="Cancel"
         primary={false}
@@ -291,7 +304,7 @@ class StepAppt extends Component {
         style={{ backgroundColor: "#00C853 !important" }}
         primary={true}
         onClick={() => this.handleSubmit()}
-      />
+      />*/
     ];
     return (
       <div>
@@ -321,7 +334,7 @@ class StepAppt extends Component {
                 <StepContent>
                     <SelectField LabelText="Vaccination Centres">
                       
-                      <MenuItem primaryText="Punggol Polyclinic"/>
+                      <MenuItem primaryText="Punggol Polyclinic" id="Punggol Polyclinic" value="Punggol Polyclinic" onClick={ e => {this.handleClinic(e)}}/>
                       <MenuItem primaryText="Woodlands Polyclinic"/>
                       <MenuItem primaryText="Tampines Polyclinic"/>
                       <MenuItem primaryText="Hougang Polyclinic"/>
@@ -370,11 +383,12 @@ class StepAppt extends Component {
                     </StepContent>
                   </Step>
                 <Step>
-
                 <StepLabel> 
-                  Share your contact information with us and we'll send you a
+                  Share your contact information with us and well send you a
                   reminder
+                
                 </StepLabel>
+
                 <StepContent>
                   <p>
                     <section>
@@ -437,7 +451,7 @@ class StepAppt extends Component {
                           })
                         }
                         disabled={!contactFormFilled || data.processed}
-                        style={{ marginTop: 20, maxWidth: 100 }}
+                        /*style={{ marginTop: 20, maxWidth: 100 }}*/
                       />
                     </section>
                   </p>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Navlink } from "react-router";
+import React from 'react';
+/*import { Navlink } from "react-router";*/
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Header = () => {
-    const [isOpen, setOpen] = useState(false);
+/* const [isOpen, setOpen] = useState(false)*/
 
     const classes = useStyles();
     

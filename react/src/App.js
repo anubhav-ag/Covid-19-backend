@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import './App.css';
+// eslint-disable-next-line no-unused-vars
 import axios from 'axios'
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import VaccineAppt from './components/VaccineAppt';
