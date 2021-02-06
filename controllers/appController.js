@@ -17,6 +17,11 @@ const UserModel = Users(sequelize.sequelize, sequelize.Sequelize.DataTypes)
 
 const controllers ={
     /*
+    allAppointments(req, res) {
+    // Returns all appointments
+    AppointmentModel.findAll({}).exec((err, appointments) => 
+      res.json(appointments))
+  },
     createAppointment: (req,res) => {
         console.log(req.body)
             
@@ -38,22 +43,9 @@ const controllers ={
             })
         })
     }*/
-    
-
-  newAppointment(req, res){
-    getUserDetails(req, res)
-    .then(response=>{
-      // console.log(response)
-      res.json(response)
-    }
-      
-    )
-    .catch(err=>{console.log(err)})
-  },
 
   createAppointment: (req, res) => {
     const appbody = req.body;
-
     if (
       !appbody.clinic || !appbody.date || !appbody.time
     ) {
@@ -62,21 +54,23 @@ const controllers ={
       });
       return;
     }
-
+    
     const authToken = req.headers.auth_token;
     const rawJWT = jwt.decode(authToken);
     const email = rawJWT.email;
 
     UserModel.findOne({
         email: email,
-
       }
-      .then((response) => {
-        if (!response) {
+      .then((emailresponse) => {
+        if (!emailresponse) {
           res.json({ message: "no such user in database" })
           return
         }})
-          .then((georespone) => {
+          .then((response) => {
+            
+            })
+            .then((response) => {
             AppointmentModel
               .create({
                 user_id: response.user_id,
@@ -112,11 +106,9 @@ function getUserDetails(req, res) {
     //check the user databsase to see if the user exists using the above user info
   
     return UserModel.findOne({
-      email: email,
-      id: id
+      email: email
     });
   }
   
 
 module.exports = controllers
-

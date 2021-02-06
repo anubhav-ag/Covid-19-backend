@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Appointment',
+    underscored: true
   });
   return Appointment;
 };

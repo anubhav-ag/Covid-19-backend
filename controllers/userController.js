@@ -22,12 +22,6 @@ const controllers = {
           });
           return
         }})
-         /* 
-        const encodedAddress = encodeURIComponent(req.body.default_address);
-        axios
-          .get(
-            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${process.env.GEOCODEAPI}`
-          )*/
           .then((response) => {
             const salt = uuid.v4();
             const combination = salt + req.body.password;
@@ -37,14 +31,10 @@ const controllers = {
               first_name: req.body.first_name,
               last_name: req.body.last_name,
               email: req.body.email,
-              //contact_number: req.body.contact_number,
-              user_id: req.body.user_id,
+              cellphone: req.body.cellphone,
+              //user_id: req.body.user_id,
               //slug: _.kebabCase(req.body.first_name + req.body.user_id),
               address: req.body.default_address,
-              /*"geometry.coordinates": [
-                response.data.results[0].geometry.location.lng,
-                response.data.results[0].geometry.location.lat,
-              ],*/
               pwsalt: salt,
               hash: hash,
             })
@@ -147,3 +137,5 @@ const controllers = {
 };
 
 module.exports = controllers;
+
+

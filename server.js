@@ -64,14 +64,14 @@ if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging')
         res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
     });
 };
-
+/*
 // Catch any bad requests
 app.get('*', (req, res) => {
     res.status(200).json({
         msg: 'Catch All'
     });
 });
-
+*/
 // Configure our server to listen on the port defiend by our port variable
 app.listen(port, () => console.log(`BACK_END_SERVICE_PORT: ${port}`))
 
