@@ -7,8 +7,8 @@ const usersController = require('./controllers/userController')
 const appController = require('./controllers/appController')
 const sequelize = require('./models/index')
 const bodyParser = require('body-parser')
-const cors = require('cors');
-const path = require('path');
+const cors = require('cors')
+const path = require('path')
 
 // This application level middleware prints incoming requests to the servers console, useful to see incoming requests
 app.use((req, res, next) => {
@@ -20,6 +20,7 @@ app.use((req, res, next) => {
 app.use(express.urlencoded({
     extended: true
 }))
+
 app.get('/api/v1', (req, res) => {
     res.json({
         message: "Welcome to Appointment Booker API"

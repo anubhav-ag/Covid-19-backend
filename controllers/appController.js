@@ -55,7 +55,7 @@ const controllers ={
     const appbody = req.body;
 
     if (
-      !appbody.clinic || !orderbody.date || !orderbody.time
+      !appbody.clinic || !appbody.date || !appbody.time
     ) {
       res.json({
         error: "field/selection must not be empty",
@@ -80,11 +80,9 @@ const controllers ={
             AppointmentModel
               .create({
                 user_id: response.user_id,
-                contact: response.contact_number,
-                restaurant: req.body.restaurant,
-                deliveryTimeEst: req.body.estDeliveryTime,
-                deliveryFee: req.body.estDeliveryFee,
-                meetupPoint: meetupPoint
+                //clinic: response.clinic //selection,
+                date: response.date,
+                time: response.time
               })
             })
               .then((orderResponse) => {
