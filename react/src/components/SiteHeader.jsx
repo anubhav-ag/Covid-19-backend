@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Header = () => {
+const SiteHeader = () => {
 /* const [isOpen, setOpen] = useState(false)*/
 
     const classes = useStyles();
@@ -46,5 +46,5 @@ const Header = () => {
     );
    };
 
-export default Header;
+export default SiteHeader;
   
