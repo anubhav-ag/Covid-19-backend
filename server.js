@@ -41,9 +41,8 @@ app.use(cors());
 //all clinic list
 app.get('/api/v1/clinics', clinicController.listClinics)
 
-app.post('/api/v1/appointments', appController.createAppointment)
-
-
+//create appointment
+app.post('/api/v1/appointments',verifyJWT ,appController.createAppointment)
 
 /*
 ** USER ON-BOARDING ROUTES
@@ -56,7 +55,11 @@ app.post('/api/v1/users/register', usersController.register)
 app.post('/api/v1/users/login', usersController.login)
 
 // user profile route
-//app.get('/api/v1/users/profile', verifyJWT, usersController.getUserProfile)
+app.get('/api/v1/users/profile', verifyJWT, usersController.getUserProfile)
+
+// get user appointments
+app.get('/api/v1/users/myappointment', verifyJWT, appController.getAppointment)
+
 
 // This middleware informs the express application to serve our compiled React files
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {

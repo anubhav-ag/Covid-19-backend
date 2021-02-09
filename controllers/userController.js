@@ -140,6 +140,12 @@ const controllers = {
         });
       });
   },
+
+  getUserProfile: (req, res) => {
+    res.json({
+        data: "dummy"
+    })
+}
 };
 
 module.exports = controllers;

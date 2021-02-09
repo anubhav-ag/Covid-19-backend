@@ -2,12 +2,10 @@ require("dotenv").config();
 const axios = require("axios");
 const sequelize = require('../models/index')
 const jwt = require("jsonwebtoken");
-const SHA256 = require("crypto-js/sha256");
-const uuid = require("uuid");
 const Slots = require('../models/slot')
 const Users = require('../models/user')
 const Appointments = require('../models/appointment');
-const clinic = require("../models/clinic");
+const clinics = require("../models/clinic");
 const { DATE } = require("sequelize");
 const SlotModel = Slots(sequelize.sequelize, sequelize.Sequelize.DataTypes)
 const AppointmentModel = Appointments(sequelize.sequelize, sequelize.Sequelize.DataTypes)
@@ -22,14 +20,14 @@ set = the.set
 
 //creating an appointment
 
-const controllers ={
+const controllers = {
   createAppointment: (req, res) => {
-
     const authToken = req.headers.auth_token
     const rawJWT = jwt.decode(authToken)
     const email = rawJWT.email
+    let user_id_local
   
-    UserModel.findOne({
+   return UserModel.findOne({
           where: {
             email: email }
           })
@@ -39,7 +37,10 @@ const controllers ={
           res.status(400).json({ message: "no such user in database" })
           //return
           res.send
-        }})
+        }
+      else 
+    user_id_local=emailresponse.id
+  })
         .then (() => {
           const appbody = req.body
           if (
@@ -52,7 +53,7 @@ const controllers ={
           }
         })
           .then ((slotresponse) => {
-            SlotModel.findOne({
+           return SlotModel.findOne({
               //attribute: [id],
              where: {
              clinic_id: req.body.clinic_id,
@@ -63,20 +64,25 @@ const controllers ={
             )
            // console.log(slotresponse + 'line62')
           })
-            .then ((apptresponse) => {
-              console.log(apptresponse + 'line 68')
-              if (isSlotAvail(20) == true)
-              {
-                console.log("LINE 70")
-              AppointmentModel.create({
-                  user_id: 19,
-                  slot_id: 20
-                  })
+            .then ((apptResponse) => {
+              console.log(apptResponse + 'line 68')
+              return isSlotAvail(apptResponse.id)
+              .then((slotAvailability)=>{
+                if (slotAvailability === true)
+                {
+                 // console.log("LINE 70")
+                AppointmentModel.create({
+                  //need to check if these exist in the DB already, create appt only if they dont exist
+                    user_id: user_id_local,
+                    slot_id: apptResponse.id
+                    })
+                }
+              else{
+                console.log("SOME ERROR")
               }
-            else{
-            
-              console.log("SOME ERROR")
-            }})
+              })
+      
+             })
                 .then ((confirmresponse) => {
                   res.status(200).json({ message: "successfully created appointment",
                   })
@@ -97,42 +103,35 @@ const controllers ={
         console.log(err)
       })
       
+  },
+
+  getAppointment: (req, res) => {
+    const authToken = req.headers.auth_token
+    const rawJWT = jwt.decode(authToken)
+    const email = rawJWT.email
+    let user_id_local
+  
+   return UserModel.findOne
+    ({
+      where: {email: email }
+    })
+      
+    .then ((emailresponse) => {
+       if (!emailresponse) 
+        {
+          res.status(400).json({ message: "no such user in database" })
+          res.send
+        }
+        else 
+          user_id_local=emailresponse.id
+    })
   }
 }
   
   module.exports = controllers
 
-  
 
-/*
-function getUserDetails(req, res) {
-    //decode the jwt to retrieve the user iinfo
-    const authToken = req.headers.auth_token;
-    const rawJWT = jwt.decode(authToken);
-    const email = rawJWT.email;
-  
-    //check the user databsase to see if the user exists using the above user info
-  
-    return UserModel.findOne({
-      email: email
-    });
-  }
-  
-*/
 
-/*
-code for booking appt
-
-1. check user
-
-2. check options chosen in slot table
-clinic - check for id
-date - chedk date
-time - check time
-
-3. add slot_id and user id to reservation table
-
-*/
 function isSlotAvail (local_slot_id) {
   return the.set ({
     numOfSlot : SlotModel.findOne({
@@ -143,14 +142,15 @@ function isSlotAvail (local_slot_id) {
     }),
     aggSlot: AppointmentModel.findAndCountAll ({
       where: {
-        slot_id: local_slot_id      }
+        slot_id: local_slot_id}
   })
   })
   .then(function() {
-    console.log(the.aggSlot.count +" in isSlotAvailable "+ the.numOfSlot.num_of_slots)
-    let return_val= (the.aggSlot.count <the.numOfSlot.num_of_slots)
-    console.log(return_val +" is return val")
-    return return_val
+    if (the.aggSlot.count != null && the.numOfSlot.num_of_slots != null){
+    //console.log(the.aggSlot.count +" in isSlotAvailable "+ the.numOfSlot.num_of_slots)
+    let return_val= (the.aggSlot.count < the.numOfSlot.num_of_slots)
+    //console.log(return_val +" is return val")
+    return return_val}
   })
    
   }
