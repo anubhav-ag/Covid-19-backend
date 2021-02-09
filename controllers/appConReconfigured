@@ -58,6 +58,7 @@ const controllers ={
              clinic_id: req.body.clinic_id,
              date: req.body.date,
              time_slot: req.body.time   
+            //need to confirm availibility of slot
             }
           }
             )

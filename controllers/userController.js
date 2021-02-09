@@ -11,16 +11,20 @@ const UserModel = Users(sequelize.sequelize, sequelize.Sequelize.DataTypes)
 const controllers = {
   register: (req, res) => {
     UserModel.findOne({
-      email: req.body.email,
+      where: {
+        email: req.body.email
+      }
+      
     })
       .then((result) => {
         if (result) {
+          console.log(result)
           res.statusCode = 400;
           res.json({
             success: false,
             message: "Username already exists",
           });
-          return
+          res.send
         }})
           .then((response) => {
             const salt = uuid.v4();
@@ -32,11 +36,10 @@ const controllers = {
               last_name: req.body.last_name,
               email: req.body.email,
               cellphone: req.body.cellphone,
-              //user_id: req.body.user_id,
               //slug: _.kebabCase(req.body.first_name + req.body.user_id),
               address: req.body.default_address,
-              pwsalt: salt,
-              hash: hash,
+              password: hash,
+              pwsalt: salt
             })
               .then((createResult) => {
                 res.json({
@@ -73,9 +76,12 @@ const controllers = {
 
   login: (req, res) => {
     UserModel.findOne({
-      email: req.body.email,
+      where: {
+        email: req.body.email
+      }
     })
       .then((result) => {
+        console.log(result.pwsalt)
         // check if result is empty, if it is, no user, so login fail, return err as json response
         if (!result) {
           res.statusCode = 401;
@@ -87,10 +93,10 @@ const controllers = {
         }
 
         // combine DB user salt with given password, and apply hash algo
-        const hash = SHA256(result.pwsalt + req.body.password).toString();
+        const hash = SHA256(result.pwsalt + req.body.password).toString()
 
         // check if password is correct by comparing hashes
-        if (hash !== result.hash) {
+        if (hash !== result.password) {
           res.statusCode = 401;
           res.json({
             success: false,
@@ -137,5 +143,3 @@ const controllers = {
 };
 
 module.exports = controllers;
-
-

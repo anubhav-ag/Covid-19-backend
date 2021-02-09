@@ -27,17 +27,22 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     email: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      unique: true
     },
     password: {
-      type:DataTypes.STRING
-    },
-    user_id: {
       type:DataTypes.STRING
     },
     address: {
       type: DataTypes.STRING
     },
+    cellphone: {
+      type: DataTypes.STRING,
+      unique:true
+    },
+    pwsalt: {
+      type: DataTypes.STRING,
+      },
     created_at: {
       allowNull: false,
       type: DataTypes.DATE,

@@ -10,6 +10,8 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const path = require('path')
 
+//const {UniqueConstraintError} = require ('sequelize / types')
+
 // This application level middleware prints incoming requests to the servers console, useful to see incoming requests
 app.use((req, res, next) => {
     console.log(`Request_Endpoint: ${req.method} ${req.url}`);
@@ -39,7 +41,7 @@ app.use(cors());
 //all clinic list
 app.get('/api/v1/clinics', clinicController.listClinics)
 
-app.get('/api/v1/appointments', appController.createAppointment)
+app.post('/api/v1/appointments', appController.createAppointment)
 
 
 
