@@ -10,17 +10,16 @@ const { DATE } = require("sequelize");
 const SlotModel = Slots(sequelize.sequelize, sequelize.Sequelize.DataTypes)
 const AppointmentModel = Appointments(sequelize.sequelize, sequelize.Sequelize.DataTypes)
 const UserModel = Users(sequelize.sequelize, sequelize.Sequelize.DataTypes)
-const StatefulContext  = require('stateful-context')
+const StatefulContext  = require('stateful-context');
+const { response } = require("express");
 the = new StatefulContext()
 set = the.set
 
-//const {UniqueConstraintError} = require ('sequelize/ types')
-
 //const _ = require("lodash");
 
-//creating an appointment
 
 const controllers = {
+  //creating an appointment
   createAppointment: (req, res) => {
     const authToken = req.headers.auth_token
     const rawJWT = jwt.decode(authToken)
@@ -38,9 +37,9 @@ const controllers = {
           //return
           res.send
         }
-      else 
-    user_id_local=emailresponse.id
-  })
+        else 
+        user_id_local=emailresponse.id
+      })
         .then (() => {
           const appbody = req.body
           if (
@@ -65,7 +64,7 @@ const controllers = {
            // console.log(slotresponse + 'line62')
           })
             .then ((apptResponse) => {
-              console.log(apptResponse + 'line 68')
+              //console.log(apptResponse + 'line 68')
               return isSlotAvail(apptResponse.id)
               .then((slotAvailability)=>{
                 if (slotAvailability === true)
@@ -81,7 +80,6 @@ const controllers = {
                 console.log("SOME ERROR")
               }
               })
-      
              })
                 .then ((confirmresponse) => {
                   res.status(200).json({ message: "successfully created appointment",
@@ -104,8 +102,9 @@ const controllers = {
       })
       
   },
-
+//get appointment for logged in user
   getAppointment: (req, res) => {
+    //verify user at first
     const authToken = req.headers.auth_token
     const rawJWT = jwt.decode(authToken)
     const email = rawJWT.email
@@ -113,24 +112,103 @@ const controllers = {
   
    return UserModel.findOne
     ({
-      where: {email: email }
+      where: {email: email}
     })
-      
+      //for i user exists in DB
     .then ((emailresponse) => {
        if (!emailresponse) 
         {
           res.status(400).json({ message: "no such user in database" })
           res.send
         }
-        else 
-          user_id_local=emailresponse.id
+        else {
+          res.status(200).json({message: "i will be getting the appt soon"})
+          user_id_local = emailresponse.id
+          //console.log("i am here inside get appt " + user_id_local)
+        }
     })
-  }
-}
+      .then (() => {
+        return AppointmentModel.findOne({
+          where : {
+            user_id:user_id_local,
+          },
+          //raw: true
+
+        })
+      })
+        .then((apptResponse)=> {
+          //console.log(apptResponse.slot_id + " this is line 142")
+          return SlotModel.findOne({
+            where : {
+              id: apptResponse.slot_id
+            },
+            raw:true
+          })
+        })
+        .then((slotResponse) => {
+          //console.log(slotResponse.id + " this is line 151")
+          if (!slotResponse) {
+            res.status(400).json({ message: "no such user slot found" })
+            res.send
+          }
+          else {
+            res.status(200).json({ message: "slot is found", data:slotResponse })
+          }
+        })
+              .catch((err) => {
+                console.log(err)
+              })
+          .catch((err) => {
+            console.log(err)
+          })
+        .catch((err) => {
+          console.log(err)
+        })
+      .catch((err) => {
+        console.log(err)
+})
+  },
+
+  cancelAppointment: (req, res) => {
+      //cancel appointment for user
+
+    //verify user at first
+    const authToken = req.headers.auth_token
+    const rawJWT = jwt.decode(authToken)
+    const email = rawJWT.email
+    let user_id_local
+  
+   return UserModel.findOne
+    ({
+      where: {email: email}
+    })
+      //for i user exists in DB
+    .then ((emailresponse) => {
+       if (!emailresponse) 
+        {
+          res.status(400).json({ message: "no such user in database" })
+          res.send
+        }
+        else {
+          res.status(200).json({message: "i will be getting the appt soon"})
+          user_id_local = emailresponse.id
+          console.log("i am here inside get appt " + user_id_local)}
+    })
+      .then (() => {
+        return AppointmentModel.destroy({
+          where : {
+            user_id:user_id_local
+          }
+        })
+      })
+  },
+
+  updateAppointment: (req, res) => {
+    //need to write function to define the user-login check
+  },
+} 
   
   module.exports = controllers
-
-
 
 function isSlotAvail (local_slot_id) {
   return the.set ({
@@ -152,92 +230,4 @@ function isSlotAvail (local_slot_id) {
     //console.log(return_val +" is return val")
     return return_val}
   })
-   
   }
-
-
-  
-  //write a function to reduce the num of slots in the slot table - 
-  //create function to check aggreate of slot model to num of slots 
-  
-  
-    /*
-    allAppointments(req, res) {
-    // Returns all appointments
-    AppointmentModel.findAll({}).exec((err, appointments) => 
-      res.json(appointments))
-  },
-    createAppointment: (req,res) => {
-        console.log(req.body)
-            
-    AppointmentModel.create({
-        clinic: req.body.clinic,
-        date: req.body.date,
-        time: req.body.time,
-    })
-        .then(response => {
-            return res.status(201).json({
-                success: true,
-            })
-        })
-        .catch(err => {
-            console.log(err)
-            return res.status(400).json({
-                success: false,
-                message: 'create appointment failed'
-            })
-        })
-    }*/
-
-    /*
-  createAppointment: (req, res) => {
-    const appbody = req.body;
-    if (
-      !appbody.clinic || !appbody.date || !appbody.time
-    ) {
-      res.json({
-        error: "field/selection must not be empty",
-      });
-      return;
-    }
-    
-    const authToken = req.headers.auth_token;
-    const rawJWT = jwt.decode(authToken);
-    const email = rawJWT.email;
-
-    UserModel.findOne({
-        email: email,
-      }
-      .then((emailresponse) => {
-        if (!emailresponse) {
-          res.json({ message: "no such user in database" })
-          return
-        }})
-          .then((response) => {
-            
-            })
-            .then((response) => {
-            AppointmentModel
-              .create({
-                user_id: response.user_id,
-                //clinic: response.clinic //selection,
-                date: response.date,
-                time: response.time
-              })
-            })
-              .then((orderResponse) => {
-                res.json({
-                  message: "successfully created appointment",
-                });
-              })
-              .catch((err) => {
-                console.log(err)
-              })
-          .catch((err) => {
-            console.log(err)
-          })
-      .catch((err) => {
-        console.log(err);
-      }))
-  },*/
-

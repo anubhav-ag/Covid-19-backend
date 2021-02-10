@@ -142,8 +142,26 @@ const controllers = {
   },
 
   getUserProfile: (req, res) => {
-    res.json({
-        data: "dummy"
+    const authToken = req.headers.auth_token
+    const rawJWT = jwt.decode(authToken)
+    const email = rawJWT.email
+    let user_id_local
+  
+   return UserModel.findOne
+    ({
+      where: {email: email}
+    })
+      
+    .then ((emailresponse) => {
+       if (!emailresponse) 
+        {
+          res.status(400).json({ message: "no such user in database" })
+          res.send
+        }
+        else {
+          res.status(400).json({ message: "logged in" })
+          user_id_local=emailresponse.id
+          console.log("i am inside the user profile")}
     })
 }
 };
