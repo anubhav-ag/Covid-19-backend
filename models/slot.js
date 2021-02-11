@@ -32,6 +32,16 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER.UNSIGNED,
       defaultValue: 10
     },
+    created_at: {
+      allowNull: false,
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
+    },
+    updated_at: {
+      allowNull: false,
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW
+    },
     clinic_id: { 
       type: DataTypes.INTEGER,
       references: {
@@ -45,6 +55,10 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Slot',
+    underscored: true
+
   });
   return Slot;
 };
+
+

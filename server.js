@@ -11,12 +11,13 @@ const cors = require('cors')
 const path = require('path');
 const db = require('./models/index');
 
+//const {UniqueConstraintError} = require ('sequelize / types')
+
 // This application level middleware prints incoming requests to the servers console, useful to see incoming requests
 app.use((req, res, next) => {
     console.log(`Request_Endpoint: ${req.method} ${req.url}`);
     next();
 });
-
 
 app.use(express.urlencoded({
     extended: true
@@ -40,9 +41,8 @@ app.use(cors());
 //all clinic list
 app.get('/api/v1/clinics', clinicController.listClinics)
 
-app.get('/api/v1/appointments', appController.createAppointment)
-
-
+//create appointment
+app.post('/api/v1/appointments',verifyJWT ,appController.createAppointment)
 
 /*
 ** USER ON-BOARDING ROUTES
@@ -55,7 +55,18 @@ app.post('/api/v1/users/register', usersController.register)
 app.post('/api/v1/users/login', usersController.login)
 
 // user profile route
-//app.get('/api/v1/users/profile', verifyJWT, usersController.getUserProfile)
+app.get('/api/v1/users/profile', usersController.getUserProfile)
+
+// get user appointments
+app.get('/api/v1/users/myappointment',/* verifyJWT,*/ appController.getAppointment)
+
+// update user appointment
+app.post('/api/v1/users/updateappointment', appController.updateAppointment)
+
+//cancel user appointment
+app.delete('/api/v1/users/cancelappt', appController.cancelAppointment)
+
+
 
 // This middleware informs the express application to serve our compiled React files
 if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
@@ -65,14 +76,7 @@ if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging')
         res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
     });
 };
-/*
-// Catch any bad requests
-app.get('*', (req, res) => {
-    res.status(200).json({
-        msg: 'Catch All'
-    });
-});
-*/
+
 // Configure our server to listen on the port defiend by our port variable
 app.listen(port, () => console.log(`BACK_END_SERVICE_PORT: ${port}`))
 
@@ -93,7 +97,7 @@ function verifyJWT(req, res, next) {
     try {
       // if verify success, proceed
       const userData = jwt.verify(authToken, process.env.JWT_SECRET, {
-        algorithms: ['HS384']
+        algorithms: 'HS384'
       })
       next()
     } catch(err) {
