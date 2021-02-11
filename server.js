@@ -8,7 +8,8 @@ const appController = require('./controllers/appController')
 const sequelize = require('./models/index')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const path = require('path')
+const path = require('path');
+const db = require('./models/index');
 
 // This application level middleware prints incoming requests to the servers console, useful to see incoming requests
 app.use((req, res, next) => {
