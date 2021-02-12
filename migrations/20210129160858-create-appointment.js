@@ -19,7 +19,7 @@ module.exports = {
         }
       },
       slot_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.BIGINT.UNSIGNED,
         references: {
           model: {
             tableName: 'slots',

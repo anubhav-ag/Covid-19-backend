@@ -6,7 +6,7 @@ const ClinicModel = Clinics(sequelize.sequelize, sequelize.Sequelize.DataTypes)
 const controllers = {
     listClinics: (req, res) => {
     ClinicModel.findAll({
-        attributes: ['clinic_name',] 
+        attributes: ['id', 'clinic_name', ] 
       })
           .then(response => {
               return res.status(200).json({
