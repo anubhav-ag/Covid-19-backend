@@ -58,7 +58,7 @@ app.get("/api/v1/myclinic", appController.findAvailableAppointment);
 app.get("/api/v1/slots", appController.findAvailableAppointment);
 
 //create appointment
-app.post("/api/v1/appointments", verifyJWT, appController.createAppointment);
+app.post("/api/v1/createmyappointment", appController.createAppointment);
 
 /*
  ** USER ON-BOARDING ROUTES
@@ -69,6 +69,9 @@ app.post("/api/v1/users/register", usersController.register);
 
 // user login route
 app.post("/api/v1/users/login", usersController.login);
+
+// user profile route
+app.get("/api/v1/users/dashboard", verifyJWT, usersController.getUserProfile);
 
 // user profile route
 app.get("/api/v1/users/profile", verifyJWT, usersController.getUserProfile);
@@ -85,28 +88,16 @@ app.post("/api/v1/users/updateappointment", appController.updateAppointment);
 //cancel user appointment
 app.delete("/api/v1/users/cancelappt", appController.cancelAppointment);
 
-// This middleware informs the express application to serve our compiled React files
-if (
-  process.env.NODE_ENV === "production" ||
-  process.env.NODE_ENV === "staging"
-) {
-  app.use(express.static(path.join(__dirname, "client/build")));
-
-  app.get("*", function (req, res) {
-    res.sendFile(path.join(__dirname, "client/build", "index.html"));
-  });
-}
-
 // Configure our server to listen on the port defiend by our port variable
 app.listen(port, () => console.log(`BACK_END_SERVICE_PORT: ${port}`));
 
 function verifyJWT(req, res, next) {
   // get the jwt token from the request header
-  const authToken = req.headers.auth_token;
+  const authToken = req.headers["x-auth-token"];
   console.log(authToken);
   // check if authToken header value is empty, return err if empty
   if (!authToken) {
-    res.json({
+    res.status(400).json({
       success: false,
       message: "Auth header value is missing",
     });
@@ -126,7 +117,7 @@ function verifyJWT(req, res, next) {
     console.log(err);
     //console.log("line127 " + authToken);
     // if fail, return error msg
-    res.json({
+    res.status(400).json({
       success: false,
       message: "Auth token is invalid",
     });
