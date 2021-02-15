@@ -10,6 +10,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
 const jwt = require("jsonwebtoken");
+const { use } = require("./routes/api/auth");
 
 //const {UniqueConstraintError} = require ('sequelize / types')
 
@@ -53,40 +54,40 @@ app.use(
 app.options("*", cors());
 
 //all clinic list
-app.get("/api/v1/clinics", clinicController.listClinics);
-app.get("/api/v1/myclinic", appController.findAvailableAppointment);
-app.get("/api/v1/slots", appController.findAvailableAppointment);
+app.get("/clinics", clinicController.listClinics);
+app.get("/myclinic", appController.findAvailableAppointment);
+app.get("/slots", appController.findAvailableAppointment);
 
 //create appointment
-app.post("/api/v1/createmyappointment", appController.createAppointment);
+app.post("/createmyappointment", appController.createAppointment);
 
 /*
  ** USER ON-BOARDING ROUTES
  */
 
 // user registration
-app.post("/api/v1/users/register", usersController.register);
+app.post("/users/register", usersController.register);
 
 // user login route
-app.post("/api/v1/users/login", usersController.login);
+app.post("/users/login", usersController.login);
 
 // user profile route
-app.get("/api/v1/users/dashboard", verifyJWT, usersController.getUserProfile);
+app.get("/users/dashboard", verifyJWT, usersController.getUserProfile);
 
 // user profile route
-app.get("/api/v1/users/profile", verifyJWT, usersController.getUserProfile);
+app.get("/users/profile", verifyJWT, usersController.getUserProfile);
 
 // get user appointments
 app.get(
-  "/api/v1/users/myappointment",
+  "/users/myappointment",
   /* verifyJWT,*/ appController.getAppointment
 );
 
 // update user appointment
-app.post("/api/v1/users/updateappointment", appController.updateAppointment);
+app.post("/users/updateappointment", appController.updateAppointment);
 
 //cancel user appointment
-app.delete("/api/v1/users/cancelappt", appController.cancelAppointment);
+app.delete("/users/cancelappt", appController.cancelAppointment);
 
 // Configure our server to listen on the port defiend by our port variable
 app.listen(port, () => console.log(`BACK_END_SERVICE_PORT: ${port}`));
