@@ -27,9 +27,21 @@ SlotModel.hasMany(AppointmentModel);
 const controllers = {
   //creating an appointment
   createAppointment: (req, res) => {
+<<<<<<< HEAD
     const authToken = req.headers.auth_token;
     const rawJWT = jwt.decode(authToken);
     const email = rawJWT.email;
+=======
+    res.setHeader("content-type", "application/json");
+
+    const authToken = req.headers["x-auth-token"];
+    console.log();
+    const rawJWT = jwt.decode(authToken);
+    console.log(rawJWT + " AAABBBBB");
+    const email = rawJWT.email;
+    console.log(email + "line33");
+    // const email = "test@gmail.com"; //should be this in the actual code :rawJWT.email
+>>>>>>> 6936fa455d178cb0484f89045e0a50ea47caaf70
     let user_id_local;
 
     return UserModel.findOne({
@@ -47,7 +59,12 @@ const controllers = {
       })
       .then(() => {
         const appbody = req.body;
+<<<<<<< HEAD
         if (!appbody.clinic_id || !appbody.date || !appbody.time) {
+=======
+        console.log(req.body);
+        if (!appbody.clinic_id || !appbody.date || !appbody.time_slot) {
+>>>>>>> 6936fa455d178cb0484f89045e0a50ea47caaf70
           res.status(400).json({ error: "field/selection must not be empty" });
           res.send;
           //return;
@@ -59,7 +76,11 @@ const controllers = {
           where: {
             clinic_id: req.body.clinic_id,
             date: req.body.date,
+<<<<<<< HEAD
             time_slot: req.body.time,
+=======
+            id: req.body.time_slot,
+>>>>>>> 6936fa455d178cb0484f89045e0a50ea47caaf70
           },
         });
         // console.log(slotresponse + 'line62')
@@ -69,6 +90,7 @@ const controllers = {
         return isSlotAvail(apptResponse.id).then((slotAvailability) => {
           if (slotAvailability === true) {
             // console.log("LINE 70")
+<<<<<<< HEAD
             AppointmentModel.create({
               //need to check if these exist in the DB already, create appt only if they dont exist
               user_id: user_id_local,
@@ -96,12 +118,56 @@ const controllers = {
       })
       .catch((err) => {
         console.log(err);
+=======
+            return AppointmentModel.create({
+              //need to check if these exist in the DB already, create appt only if they dont exist
+              user_id: user_id_local,
+              slot_id: apptResponse.id,
+            }).then((confirmresponse) => {
+              console.log(confirmresponse + "<<<<<<<<<<<<<<<<<<<<<<<<<line84");
+              res
+                .status(200)
+                .json({ message: "successfully created appointment" });
+              //res.send;
+            });
+          } else {
+            res.status(400).json({ message: "error in creating appointment" });
+          }
+        });
+      })
+
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({ message: err });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({ message: err });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({ message: err });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({ message: err });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({ message: err });
+>>>>>>> 6936fa455d178cb0484f89045e0a50ea47caaf70
       });
   },
   //get appointment for logged in user
   getAppointment: (req, res) => {
+<<<<<<< HEAD
     //verify user at first
     const authToken = req.headers.auth_token;
+=======
+    res.setHeader("content-type", "application/json");
+    //verify user at first
+    const authToken = req.headers["x-auth-token"];
+>>>>>>> 6936fa455d178cb0484f89045e0a50ea47caaf70
     const rawJWT = jwt.decode(authToken);
     const email = rawJWT.email;
     let user_id_local;
@@ -167,10 +233,19 @@ const controllers = {
   },
 
   cancelAppointment: (req, res) => {
+<<<<<<< HEAD
     //cancel appointment for user
 
     //verify user at first
     const authToken = req.headers.auth_token;
+=======
+    res.setHeader("content-type", "application/json");
+
+    //cancel appointment for user
+
+    //verify user at first
+    const authToken = req.headers["x-auth-token"];
+>>>>>>> 6936fa455d178cb0484f89045e0a50ea47caaf70
     const rawJWT = jwt.decode(authToken);
     const email = rawJWT.email;
     let user_id_local;
@@ -203,6 +278,11 @@ const controllers = {
   },
 
   updateAppointment: (req, res) => {
+<<<<<<< HEAD
+=======
+    res.setHeader("content-type", "application/json");
+
+>>>>>>> 6936fa455d178cb0484f89045e0a50ea47caaf70
     //need to write function to define the user-login check
   },
 
@@ -234,7 +314,14 @@ const controllers = {
       const filteredResponse = response.filter((item) => {
         return item.num_of_slots > item.Appointments.length;
       });
+<<<<<<< HEAD
       res.send(filteredResponse);
+=======
+      return res.status(200).json({
+        success: true,
+        availableSlots: filteredResponse,
+      });
+>>>>>>> 6936fa455d178cb0484f89045e0a50ea47caaf70
     });
   },
 };

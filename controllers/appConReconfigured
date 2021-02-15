@@ -25,7 +25,11 @@ set = the.set
 const controllers ={
   createAppointment: (req, res) => {
 
+<<<<<<< HEAD
     const authToken = req.headers.auth_token
+=======
+    const authToken = req.headers['x-auth-token']
+>>>>>>> 6936fa455d178cb0484f89045e0a50ea47caaf70
     const rawJWT = jwt.decode(authToken)
     const email = rawJWT.email
   
@@ -108,7 +112,11 @@ const controllers ={
 /*
 function getUserDetails(req, res) {
     //decode the jwt to retrieve the user iinfo
+<<<<<<< HEAD
     const authToken = req.headers.auth_token;
+=======
+    const authToken = req.headers['x-auth-token'];
+>>>>>>> 6936fa455d178cb0484f89045e0a50ea47caaf70
     const rawJWT = jwt.decode(authToken);
     const email = rawJWT.email;
   
@@ -202,7 +210,11 @@ function isSlotAvail (local_slot_id) {
       return;
     }
     
+<<<<<<< HEAD
     const authToken = req.headers.auth_token;
+=======
+    const authToken = req.headers['x-auth-token'];
+>>>>>>> 6936fa455d178cb0484f89045e0a50ea47caaf70
     const rawJWT = jwt.decode(authToken);
     const email = rawJWT.email;
 
