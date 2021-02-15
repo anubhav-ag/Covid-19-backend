@@ -1,12 +1,11 @@
 require("dotenv").config();
-const axios = require("axios");
 const sequelize = require("../models/index");
 const jwt = require("jsonwebtoken");
 const SHA256 = require("crypto-js/sha256");
 const uuid = require("uuid");
 const Users = require("../models/user");
 const UserModel = Users(sequelize.sequelize, sequelize.Sequelize.DataTypes);
-//const _ = require("lodash");
+const _ = require("lodash");
 
 const controllers = {
   register: (req, res) => {
@@ -116,10 +115,10 @@ const controllers = {
             expiresIn: "1h",
           }
         );
-
+        console.log(token + 'line110')
         // decode JWT to get raw values
         const rawJWT = jwt.decode(token);
-
+          console.log(rawJWT + 'line 122')
         // return token as json response
         res.json({
           success: true,
@@ -129,13 +128,14 @@ const controllers = {
         });
       })
       .catch((err) => {
+        console.log(err + 'line1311111111111')
         res.statusCode = 500;
         res.json({
           success: false,
           message: "unable to login due to unexpected error",
         });
       });
-  },
+  }, 
 
   getUserProfile: (req, res) => {
     const authToken = req.headers.auth_token;

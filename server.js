@@ -53,10 +53,9 @@ app.use(
 app.options("*", cors());
 
 // Define Routes
-app.use('/api/users', require('./routes/api/users'));
-app.use('/api/auth', require('./routes/api/auth'));
-app.use('/api/profile', require('./routes/api/profile'));
-// app.use('/api/posts', require('./routes/api/posts'));
+// app.use('/api/users', require('./routes/api/users'));
+// app.use('/api/auth', require('./routes/api/auth'));
+
 
 //all clinic list
 app.get("/api/v1/clinics", clinicController.listClinics);
@@ -75,6 +74,9 @@ app.post("/api/v1/users/register", usersController.register);
 
 // user login route
 app.post("/api/v1/users/login", usersController.login);
+
+// user profile route
+app.get("/api/v1/users/dashboard", verifyJWT, usersController.getUserProfile);
 
 // user profile route
 app.get("/api/v1/users/profile", verifyJWT, usersController.getUserProfile);
