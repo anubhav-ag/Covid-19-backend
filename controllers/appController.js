@@ -27,9 +27,15 @@ SlotModel.hasMany(AppointmentModel);
 const controllers = {
   //creating an appointment
   createAppointment: (req, res) => {
-    const authToken = req.headers.auth_token;
+    res.setHeader("content-type", "application/json");
+
+    const authToken = req.headers["x-auth-token"];
+    console.log();
     const rawJWT = jwt.decode(authToken);
+    console.log(rawJWT + " AAABBBBB");
     const email = rawJWT.email;
+    console.log(email + "line33");
+    // const email = "test@gmail.com"; //should be this in the actual code :rawJWT.email
     let user_id_local;
 
     return UserModel.findOne({
@@ -47,7 +53,8 @@ const controllers = {
       })
       .then(() => {
         const appbody = req.body;
-        if (!appbody.clinic_id || !appbody.date || !appbody.time) {
+        console.log(req.body);
+        if (!appbody.clinic_id || !appbody.date || !appbody.time_slot) {
           res.status(400).json({ error: "field/selection must not be empty" });
           res.send;
           //return;
@@ -59,7 +66,7 @@ const controllers = {
           where: {
             clinic_id: req.body.clinic_id,
             date: req.body.date,
-            time_slot: req.body.time,
+            id: req.body.time_slot,
           },
         });
         // console.log(slotresponse + 'line62')
@@ -69,39 +76,49 @@ const controllers = {
         return isSlotAvail(apptResponse.id).then((slotAvailability) => {
           if (slotAvailability === true) {
             // console.log("LINE 70")
-            AppointmentModel.create({
+            return AppointmentModel.create({
               //need to check if these exist in the DB already, create appt only if they dont exist
               user_id: user_id_local,
               slot_id: apptResponse.id,
+            }).then((confirmresponse) => {
+              console.log(confirmresponse + "<<<<<<<<<<<<<<<<<<<<<<<<<line84");
+              res
+                .status(200)
+                .json({ message: "successfully created appointment" });
+              //res.send;
             });
           } else {
-            console.log("SOME ERROR");
+            res.status(400).json({ message: "error in creating appointment" });
           }
         });
       })
-      .then((confirmresponse) => {
-        res.status(200).json({ message: "successfully created appointment" });
+
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({ message: err });
       })
       .catch((err) => {
         console.log(err);
+        res.status(400).json({ message: err });
       })
       .catch((err) => {
         console.log(err);
+        res.status(400).json({ message: err });
       })
       .catch((err) => {
         console.log(err);
+        res.status(400).json({ message: err });
       })
       .catch((err) => {
         console.log(err);
-      })
-      .catch((err) => {
-        console.log(err);
+        res.status(400).json({ message: err });
       });
   },
   //get appointment for logged in user
   getAppointment: (req, res) => {
+    res.setHeader("content-type", "application/json");
     //verify user at first
-    const authToken = req.headers.auth_token;
+    const authToken = req.headers["x-auth-token"];
     const rawJWT = jwt.decode(authToken);
     const email = rawJWT.email;
     let user_id_local;
@@ -167,10 +184,12 @@ const controllers = {
   },
 
   cancelAppointment: (req, res) => {
+    res.setHeader("content-type", "application/json");
+
     //cancel appointment for user
 
     //verify user at first
-    const authToken = req.headers.auth_token;
+    const authToken = req.headers["x-auth-token"];
     const rawJWT = jwt.decode(authToken);
     const email = rawJWT.email;
     let user_id_local;
@@ -203,6 +222,8 @@ const controllers = {
   },
 
   updateAppointment: (req, res) => {
+    res.setHeader("content-type", "application/json");
+
     //need to write function to define the user-login check
   },
 
@@ -234,7 +255,10 @@ const controllers = {
       const filteredResponse = response.filter((item) => {
         return item.num_of_slots > item.Appointments.length;
       });
-      res.send(filteredResponse);
+      return res.status(200).json({
+        success: true,
+        availableSlots: filteredResponse,
+      });
     });
   },
 };
