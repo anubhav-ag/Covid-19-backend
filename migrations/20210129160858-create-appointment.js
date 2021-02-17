@@ -46,4 +46,3 @@ module.exports = {
     await queryInterface.dropTable('Appointments');
   }
 };
-

@@ -8,6 +8,10 @@ const normalize = require('normalize-url');
 
 const User = require('../../models/User');
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 361b9007bc6d66a7309fdea89421cdecab55284a
 router.post(
   '/',
   check('name', 'Name is required').notEmpty(),
@@ -33,6 +37,10 @@ router.post(
           .json({ errors: [{ msg: 'User already exists' }] });
       }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 361b9007bc6d66a7309fdea89421cdecab55284a
       user = new User({
         name,
         email,

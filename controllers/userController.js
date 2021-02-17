@@ -1,14 +1,27 @@
 require("dotenv").config();
+const axios = require("axios");
 const sequelize = require("../models/index");
 const jwt = require("jsonwebtoken");
 const SHA256 = require("crypto-js/sha256");
 const uuid = require("uuid");
 const Users = require("../models/user");
+const Appointments = require("../models/appointment");
+const Clinics = require("../models/clinic");
+const Slots = require("../models/slot");
 const UserModel = Users(sequelize.sequelize, sequelize.Sequelize.DataTypes);
-const _ = require("lodash");
+const SlotModel = Slots(sequelize.sequelize, sequelize.Sequelize.DataTypes);
+const ClinicModel = Clinics(sequelize.sequelize, sequelize.Sequelize.DataTypes);
+const AppointmentModel = Appointments(
+  sequelize.sequelize,
+  sequelize.Sequelize.DataTypes
+);
+
+//const _ = require("lodash");
 
 const controllers = {
   register: (req, res) => {
+    res.setHeader("content-type", "application/json");
+
     UserModel.findOne({
       where: {
         email: req.body.email,
@@ -74,6 +87,7 @@ const controllers = {
   },
 
   login: (req, res) => {
+    res.setHeader("content-type", "application/json");
     UserModel.findOne({
       where: {
         email: req.body.email,
@@ -107,6 +121,8 @@ const controllers = {
         // login successful, generate JWT
         const token = jwt.sign(
           {
+            first_name: result.first_name,
+            last_name: result.last_name,
             email: result.email,
           },
           process.env.JWT_SECRET,
@@ -115,10 +131,10 @@ const controllers = {
             expiresIn: "1h",
           }
         );
-        console.log(token + 'line110')
+
         // decode JWT to get raw values
         const rawJWT = jwt.decode(token);
-          console.log(rawJWT + 'line 122')
+
         // return token as json response
         res.json({
           success: true,
@@ -128,31 +144,58 @@ const controllers = {
         });
       })
       .catch((err) => {
-        console.log(err + 'line1311111111111')
+        console.log(err + "line1477777777777")
         res.statusCode = 500;
         res.json({
           success: false,
           message: "unable to login due to unexpected error",
         });
       });
-  }, 
+  },
 
   getUserProfile: (req, res) => {
-    const authToken = req.headers.auth_token;
+    res.setHeader("content-type", "application/json");
+    const authToken = req.headers["x-auth-token"];
     const rawJWT = jwt.decode(authToken);
     const email = rawJWT.email;
     let user_id_local;
-
+    console.log(email);
     return UserModel.findOne({
       where: { email: email },
     }).then((emailresponse) => {
+      console.log(emailresponse);
       if (!emailresponse) {
         res.status(400).json({ message: "no such user in database" });
         res.send;
       } else {
-        res.status(400).json({ message: "logged in" });
-        user_id_local = emailresponse.id;
-        console.log("i am inside the user profile");
+        AppointmentModel.findOne({
+          where: {
+            user_id: emailresponse.id,
+          },
+        }).then((apptResponse) => {
+          if (!apptResponse) {
+            res.status(200).json({ message: "no appointment" });
+          } else {
+            SlotModel.findOne({
+              where: { id: apptResponse.slot_id },
+            }).then((slotResponse) => {
+              ClinicModel.findOne({
+                where: {
+                  id: slotResponse.clinic_id,
+                },
+              }).then((clinicResponse) => {
+                res.status(200).json({
+                  message: "has Appointment",
+                  clinicData: clinicResponse,
+                  slotData: slotResponse,
+                  apptData: apptResponse,
+                });
+              });
+            });
+          }
+        });
+
+        //user_id_local = emailresponse.id;
       }
     });
   },
