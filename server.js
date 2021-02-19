@@ -2,7 +2,7 @@
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
-const clinicController = require("./controllers/clinicController");
+const clinicController = require("./controllers/cliniccontroller");
 const usersController = require("./controllers/userController");
 const appController = require("./controllers/appController");
 const sequelize = require("./models/index");
