@@ -145,6 +145,7 @@ const controllers = {
         });
       })
       .catch((err) => {
+        console.log(err + "line1477777777777")
         res.statusCode = 500;
         res.json({
           success: false,
