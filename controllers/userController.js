@@ -1,3 +1,4 @@
+const moment = require("moment");
 require("dotenv").config();
 const axios = require("axios");
 const sequelize = require("../models/index");
@@ -149,9 +150,39 @@ const controllers = {
           success: false,
           message: "unable to login due to unexpected error",
         });
+      })
+      .then(() => {
+        return UserModel.findOne({
+          where: {
+            email: result.email,
+          },
+        })
+          .then((userResponse) => {
+            return AppointmentModel.findOne({
+              where: {
+                email: userResponse.email,
+              },
+            });
+          })
+          .then((apptResponse) => {
+            return SlotModel.findOne({
+              where: {
+                id: apptResponse.slot_id,
+              },
+            }).then((slotResponse) => {
+              const dateToday = Date.now();
+              const date = moment(dateToday).format("YYYY-MM-DD");
+              if (slotResponse.date > date) {
+                AppointmentModel.destroy({
+                  where: {
+                    slot_id: slotResponse.id,
+                  },
+                });
+              }
+            });
+          });
       });
   },
-
   getUserProfile: (req, res) => {
     res.setHeader("content-type", "application/json");
     const authToken = req.headers["x-auth-token"];

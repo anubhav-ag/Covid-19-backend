@@ -30,12 +30,8 @@ const controllers = {
     res.setHeader("content-type", "application/json");
 
     const authToken = req.headers["x-auth-token"];
-    console.log();
     const rawJWT = jwt.decode(authToken);
-    console.log(rawJWT + " AAABBBBB");
     const email = rawJWT.email;
-    console.log(email + "line33");
-    // const email = "test@gmail.com"; //should be this in the actual code :rawJWT.email
     let user_id_local;
 
     return UserModel.findOne({
@@ -44,10 +40,8 @@ const controllers = {
       },
     })
       .then((emailresponse) => {
-        // console.log(emailresponse + 'line34')
         if (!emailresponse) {
           res.status(400).json({ message: "no such user in database" });
-          //return
           res.send;
         } else user_id_local = emailresponse.id;
       })
@@ -182,11 +176,9 @@ const controllers = {
         })
     );
   },
-
+  //cancel appointment for user
   cancelAppointment: (req, res) => {
     res.setHeader("content-type", "application/json");
-
-    //cancel appointment for user
 
     //verify user at first
     const authToken = req.headers["x-auth-token"];
@@ -204,11 +196,9 @@ const controllers = {
             res.status(400).json({ message: "no such user in database" });
             res.send;
           } else {
-            res
-              .status(200)
-              .json({ message: "i will be getting the appt soon" });
+            res.status(200).json({ message: "i can canel the appt soon" });
             user_id_local = emailresponse.id;
-            console.log("i am here inside get appt " + user_id_local);
+            console.log("i am here inside cancel appt " + user_id_local);
           }
         })
         .then(() => {
@@ -219,12 +209,6 @@ const controllers = {
           });
         })
     );
-  },
-
-  updateAppointment: (req, res) => {
-    res.setHeader("content-type", "application/json");
-
-    //need to write function to define the user-login check
   },
 
   //right a api to call all available appts
@@ -246,9 +230,7 @@ const controllers = {
           //as: 'Appointment',
           attributes: ["slot_id"],
           required: false,
-          having: {
-            /*fuck you*/
-          },
+          having: {},
         },
       ],
     }).then((response) => {
